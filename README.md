@@ -6,15 +6,25 @@ Run [CMSIS-Executorch](https://github.com/Arm-Examples/CMSIS-Executorch)'s TinyC
 
 Generate the AI layer and embedded model first. Skip this step if using the AI layer and model files already provided in this repository:
 
+**Windows:**
+
 ```powershell
 .\setup_venv.bat
 cbuild setup cmsis-executorch.csolution.yml --active SSE-320-U85 --packs
 python create_ai_layer.py cmsis-executorch.cbuild-mlops.yml
 ```
 
+**Linux / macOS:**
+
+```bash
+bash setup_venv.sh
+cbuild setup cmsis-executorch.csolution.yml --active SSE-320-U85 --packs
+python3 create_ai_layer.py cmsis-executorch.cbuild-mlops.yml
+```
+
 Export `ai_layer/` as a Zephyr module. See [CMSIS-Toolbox documentation - Zephyr Module Export](https://open-cmsis-pack.github.io/cmsis-toolbox/Experimental-Features/#zephyr-module-export).
 
-```powershell
+```sh
 cbuild zephyr --module cmsis_ai --clayer ai_layer/ai_layer.clayer.yml --device ARMCM85 --toolchain GCC
 ```
 
