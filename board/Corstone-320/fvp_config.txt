@@ -8,16 +8,11 @@ mps4_board.subsystem.ethosu.num_macs=256              # (int   , init-time) defa
                                                       # stream is rejected at runtime ("npu.macs_per_cc != optimizer.macs_per_cc").
 mps4_board.subsystem.cpu0.INITSVTOR=0        # (int   , init-time) default = '0x11000000' : Secure vector-table offset at reset
 mps4_board.subsystem.iotss3_systemcontrol.INITSVTOR_RST=0  # (int, init-time) default = '0x11000000' : Reset value for INITSVTOR. Should match cpu0.INITSVTOR
-                                                      # NOTE: the application's vector table (__Vectors) is linked to FPGA SRAM at
-                                                      # 0x12000000 (__ROM0_BASE in regions_SSE-320.h), but the FVP default points
-                                                      # at 0x11000000 where nothing is loaded. The first boot works anyway
-                                                      # because the ELF loader sets the PC directly -- but any debugger reset
-                                                      # reboots from INITSVTOR, fetches a garbage MSP/PC and locks the core up
-                                                      # (HardFault escalation during exception entry). Pin both to the real
-                                                      # vector table so resets survive.
+                                                      # NOTE: keep both reset vector settings aligned with the Zephyr image.
+                                                      # The bare-metal regions_SSE-320.h does not configure this application.
 mps4_board.subsystem.cpu0.semihosting-enable=1        # (bool  , init-time) default = '0'      : Enable semihosting SVC traps
-                                                      # NOTE: stdio is retargeted to semihosting (board/Corstone-320/
-                                                      # retarget_stdio.c); the FVP serves it directly on its stdout.
+                                                      # NOTE: Zephyr CONFIG_SEMIHOST_CONSOLE routes console output through
+                                                      # semihosting; the FVP serves it directly on its stdout.
 mps4_board.telnetterminal0.quiet=1                    # (bool  , init-time) default = '0'      : Avoid output on stdout/stderr
 mps4_board.telnetterminal0.start_telnet=0             # (bool  , init-time) default = '1'      : Start telnet if nothing connected
 mps4_board.telnetterminal1.quiet=1                    # (bool  , init-time) default = '0'      : Avoid output on stdout/stderr

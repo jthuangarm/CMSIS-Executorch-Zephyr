@@ -4,8 +4,8 @@
 // Headless ExecuTorch runner for an Ethos-U application. Loads the .pte
 // embedded by the AI layer (model_pte.h, see create_ai_layer.py), runs one
 // inference on the NPU, and prints the output logits. Built entirely from the
-// PyTorch::ExecuTorch pack's runtime + operator components; the board layer
-// provides main(), stdout and the Ethos-U driver init and then calls app_main.
+// PyTorch::ExecuTorch pack's runtime + operator components. Zephyr provides
+// console output and Ethos-U driver initialization; main() calls app_main().
 //
 // EmbeddedModule (arm_embedded_module.hpp) manages program loading, method
 // memory and execution, like ExecuTorch's Module class does on POSIX hosts.

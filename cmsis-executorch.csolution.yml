@@ -23,7 +23,6 @@ solution:
     - pack: PyTorch::ExecuTorch@1.5.1
     - pack: ARM::Cortex_DFP
     - pack: ARM::SSE_320_BSP@^2.0.0
-    - pack: ARM::CMSIS-FreeRTOS@^11.3.0
 
   target-types:
     # Corstone-320 with an Ethos-U85 NPU, simulated on the Arm FVP.
@@ -31,7 +30,6 @@ solution:
       board: SSE-320
       device: SSE-320-FVP
       variables:
-        - Board-Layer: $SolutionDir()$/board/Corstone-320/Board-U85.clayer.yml
         - AI-Layer: $SolutionDir()$/ai_layer/ai_layer.clayer.yml
       target-set:
         - set:
@@ -39,22 +37,17 @@ solution:
             - project-context: cmsis-executorch.Debug
           debugger:
             name: Arm-FVP
-            # On macOS use .vscode/fvp.sh and copy launch.json.mac to launch.json.
-            # See: https://github.com/Arm-Examples/FVPs-on-Mac/tree/main/skills/fvp-debug-setup
             model: FVP_Corstone_SSE-320
             config-file: board/Corstone-320/fvp_config.txt
             args: "--simlimit 60"
 
   build-types:
     - type: Debug
-      debug: on
-      optimize: debug
       west-defs:
         - CONFIG_DEBUG: y
         - CONFIG_DEBUG_OPTIMIZATIONS: y
 
   projects:
-    # - project: ./cmsis-executorch.cproject.yml
     - west:
         project-id: cmsis-executorch
         app-path: ./zephyr_app

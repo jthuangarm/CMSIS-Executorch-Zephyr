@@ -16,31 +16,9 @@
  * limitations under the License.
  */
 
-#ifndef __ZEPHYR__
-#include "RTE_Components.h"
-#include CMSIS_device_header
-
-#ifdef RTE_CMSIS_RTOS2
-#include "cmsis_os2.h"
-#endif
-#endif
-
 #include "main.h"
 
 int main(void)
 {
-#ifndef __ZEPHYR__
-    /* Bare-metal initialization. */
-    stdio_init();
-
-#if defined(ETHOSU_ARCH)
-    ethos_setup();
-#endif
-
-#ifdef RTE_CMSIS_RTOS2
-    osKernelInitialize();
-#endif
-#endif
-
     return app_main();
 }
