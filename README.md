@@ -34,7 +34,7 @@ cbuild zephyr --module cmsis_ai --clayer ai_layer/ai_layer.clayer.yml --device A
 2. In **Manage Solution**, confirm the debugger is `Arm-FVP` and the configuration file is `board/Corstone-320/fvp_config.txt`, then click **Build** in the CMSIS view.
 3. Click **Load & Run** to run FVP. Check the terminal for `Output: 10 element(s): ...` and `Test_result: PASS`.
 
-## 3. Integration changes
+## 3. Zephyr integration changes from CMSIS-Executorch
 
 - **[CMakeLists.txt](zephyr_app/CMakeLists.txt)**
   - Register `cmsis_ai`, which supplies the exported Pack components' sources and headers.
