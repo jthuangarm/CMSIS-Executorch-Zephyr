@@ -1,0 +1,47 @@
+menuconfig CMSIS_AI_LAYER
+    bool "ai_layer (CMSIS-Pack)"
+    depends on CPP && STD_CPP17
+    default y
+    help
+        TinyCNN int8 image classifier for Ethos-U85
+        Source: ai_layer.clayer.yml
+
+if CMSIS_AI_LAYER
+
+config CMSIS_AI_LAYER_PYTORCH_MACHINE_LEARNING_EXECUTORCH_RUNTIME
+    bool "PyTorch::Machine Learning:ExecuTorch:Runtime"
+    default y
+    help
+      Component: PyTorch::Machine Learning:ExecuTorch:Runtime@1.5.1
+
+config CMSIS_AI_LAYER_PYTORCH_MACHINE_LEARNING_EXECUTORCH_KERNEL_UTILS
+    bool "PyTorch::Machine Learning:ExecuTorch:Kernel Utils"
+    default y
+    help
+      Component: PyTorch::Machine Learning:ExecuTorch:Kernel Utils@1.5.1
+
+config CMSIS_AI_LAYER_PYTORCH_MACHINE_LEARNING_EXECUTORCH_KERNEL_REGISTRATION
+    bool "PyTorch::Machine Learning:ExecuTorch:Kernel Registration"
+    default y
+    help
+      Component: PyTorch::Machine Learning:ExecuTorch:Kernel Registration@1.5.1
+
+config CMSIS_AI_LAYER_PYTORCH_MACHINE_LEARNING_EXECUTORCH_BACKEND_ETHOSU
+    bool "PyTorch::Machine Learning:ExecuTorch:Backend EthosU"
+    default y
+    help
+      Component: PyTorch::Machine Learning:ExecuTorch:Backend EthosU@1.5.1
+
+config CMSIS_AI_LAYER_PYTORCH_MACHINE_LEARNING_EXECUTORCH_OPERATORS_QUANTIZED_DEQUANTIZE
+    bool "PyTorch::Machine Learning:ExecuTorch Operators:Quantized dequantize"
+    default y
+    help
+      Component: PyTorch::Machine Learning:ExecuTorch Operators:Quantized dequantize@1.5.1
+
+config CMSIS_AI_LAYER_PYTORCH_MACHINE_LEARNING_EXECUTORCH_OPERATORS_QUANTIZED_QUANTIZE
+    bool "PyTorch::Machine Learning:ExecuTorch Operators:Quantized quantize"
+    default y
+    help
+      Component: PyTorch::Machine Learning:ExecuTorch Operators:Quantized quantize@1.5.1
+
+endif # CMSIS_AI_LAYER

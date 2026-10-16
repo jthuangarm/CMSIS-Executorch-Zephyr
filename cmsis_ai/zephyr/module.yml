@@ -1,0 +1,4 @@
+name: cmsis_ai
+build:
+  cmake: .
+  kconfig: Kconfig
