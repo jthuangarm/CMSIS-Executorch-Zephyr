@@ -21,7 +21,7 @@ set(ET_PTE_FILE_PATH
     CACHE FILEPATH "Path to the ExecuTorch .pte (or .bpte) model to embed"
 )
 set(ET_PTE_SECTION
-    "network_model_sec"
+    ".rodata.model_pte"
     CACHE STRING "Section attribute used for the generated model data"
 )
 
@@ -63,7 +63,7 @@ if(CMAKE_HOST_WIN32)
   )
 endif()
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
-project(executorch_executor_runner)
+project(tinycnn_zephyr LANGUAGES C CXX)
 
 # The PAL includes kernel.h, which needs Zephyr's generated heap constants.
 add_dependencies(executorch_core zephyr_generated_headers)
@@ -191,21 +191,26 @@ set(EXECUTORCH_FLATCC_INSTALL_ROOT
     CACHE PATH "" FORCE
 )
 
-set(app_sources src/arm_executor_runner.cpp
-                ${EXECUTORCH_DIR}/examples/arm/common/arm_memory_allocator.cpp
+# Run the same application as main; only the runtime provider differs.
+set(app_sources
+    ../board/Corstone-320/main.c
+    ../src/app_main.cpp
+    ../src/arm_embedded_module.cpp
+    src/model_pte.c
 )
 target_sources(app PRIVATE ${app_sources})
 
-set(_model_pte_header ${CMAKE_CURRENT_BINARY_DIR}/model_pte.h)
+set(_model_pte_header ${CMAKE_CURRENT_BINARY_DIR}/model_data.h)
 add_custom_command(
   OUTPUT ${_model_pte_header}
   COMMAND
     ${Python3_EXECUTABLE} ${EXECUTORCH_DIR}/examples/arm/common/pte_to_header.py
-    --pte ${ET_PTE_FILE_PATH} --outdir ${CMAKE_CURRENT_BINARY_DIR} --section
+    --pte ${ET_PTE_FILE_PATH} --outdir ${CMAKE_CURRENT_BINARY_DIR}
+    --outfile model_data.h --section
     ${ET_PTE_SECTION}
   DEPENDS ${ET_PTE_FILE_PATH}
           ${EXECUTORCH_DIR}/examples/arm/common/pte_to_header.py
-  COMMENT "Converting ${ET_PTE_FILE_PATH} to model_pte.h"
+  COMMENT "Converting ${ET_PTE_FILE_PATH} to model_data.h"
 )
 add_custom_target(gen_model_header DEPENDS ${_model_pte_header})
 add_dependencies(app gen_model_header)
@@ -214,14 +219,14 @@ if(DEFINED CONFIG_EXECUTORCH_METHOD_ALLOCATOR_POOL_SIZE)
   target_compile_definitions(
     app
     PRIVATE
-      ET_ARM_METHOD_ALLOCATOR_POOL_SIZE=${CONFIG_EXECUTORCH_METHOD_ALLOCATOR_POOL_SIZE}
+      APP_METHOD_POOL_SIZE=${CONFIG_EXECUTORCH_METHOD_ALLOCATOR_POOL_SIZE}
   )
 endif()
 if(DEFINED CONFIG_EXECUTORCH_TEMP_ALLOCATOR_POOL_SIZE)
   target_compile_definitions(
     app
     PRIVATE
-      ET_ARM_BAREMETAL_SCRATCH_TEMP_ALLOCATOR_POOL_SIZE=${CONFIG_EXECUTORCH_TEMP_ALLOCATOR_POOL_SIZE}
+      APP_TEMP_POOL_SIZE=${CONFIG_EXECUTORCH_TEMP_ALLOCATOR_POOL_SIZE}
   )
 endif()
 
@@ -237,6 +242,8 @@ if(TARGET ethosu_core_driver)
 endif()
 
 # Add include directories for sources and generated headers
-target_include_directories(app PRIVATE src ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(app PRIVATE
+    ../src ../ai_layer ${CMAKE_CURRENT_BINARY_DIR}
+)
 get_target_property(OUT app LINK_LIBRARIES)
 message(STATUS ${OUT})

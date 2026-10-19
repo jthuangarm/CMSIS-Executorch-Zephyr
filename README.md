@@ -1,6 +1,6 @@
 # CMSIS ExecuTorch on Zephyr
 
-- Run TinyCNN on the Corstone-320 FVP with Zephyr's native ExecuTorch module.
+- Run main's TinyCNN application on the Corstone-320 FVP with Zephyr's native ExecuTorch module.
 - Use the existing Zephyr v4.4.2 / ExecuTorch v1.5.1 environment.
 
 ## 1. Export the AI layer
@@ -31,7 +31,7 @@ python3 create_ai_layer.py cmsis-executorch.cbuild-mlops.yml
 1. Open `cmsis-executorch.csolution.yml` in Keil Studio.
 2. Select **SSE-320-U85 / Debug**, then **Build**.
 3. Select **Load & Run**.
-4. Check for `Model executed successfully.`, ten output values, and `SUCCESS: Program complete, exiting.`
+4. Check for ten output values and `Test_result: PASS`.
 
 ## 3. Native ExecuTorch integration changes
 
@@ -39,7 +39,8 @@ python3 create_ai_layer.py cmsis-executorch.cbuild-mlops.yml
   - Set the west app to `zephyr_native_app`, board `mps4/corstone320/fvp`.
   - Pass `ET_PTE_FILE_PATH: ../../../../ai_layer/model.pte` to select the model.
 - **[CMakeLists.txt](zephyr_native_app/CMakeLists.txt)**
-  - Base the app on upstream `hello-executorch`; register TinyCNN's quantize/dequantize operators.
+  - Build main's `app_main.cpp` and `arm_embedded_module.cpp` against the native runtime.
+  - Embed `ET_PTE_FILE_PATH` through a small C adapter; register model-selected operators.
   - Fix build ordering with `add_dependencies(executorch_core zephyr_generated_headers)`.
   - Windows workarounds: use installed `flatc.exe` and exclude unused `flatcc_ep` / `flatccrt` targets.
   - The `flatc` filename mismatch is not expected on Linux; Linux is untested.
