@@ -6,30 +6,15 @@ The application starts from ExecuTorch v1.5.1's [`hello-executorch`](https://git
 
 ## Setup
 
-Use an existing Zephyr v4.4.2 workspace with ExecuTorch v1.5.1 checked out by west, plus Keil Studio and the tools selected in `vcpkg-configuration.json`. Activate the Zephyr workspace's Python environment before opening VS Code. The commands below use Windows CMD and the workspace layout tested here:
+Use Zephyr v4.4.2 with ExecuTorch v1.5.1, Keil Studio, and the tools selected in `vcpkg-configuration.json`.
 
-```bat
-call C:\Projects\GH_Repos\zephyrproject\.venv\Scripts\activate.bat
-set "ZEPHYR_BASE=C:\Projects\GH_Repos\zephyrproject\zephyr"
-set "PATH=C:\Program Files\Git\bin;%PATH%"
-cd /d C:\Projects\GH_Repos\CMSIS-Executorch-Zephyr
-west list executorch -f "{abspath} ({revision})"
-code .
-```
-
-Git Bash must precede the old Windows/WSL `bash.exe` launcher on PATH. WSL is not required for this setup.
-
-### Python environments
-
-The project `.venv` exports the model; the Zephyr workspace `.venv` runs west and ExecuTorch code generation. Both need matching ExecuTorch Python dependencies. From the project directory:
+With the Zephyr workspace's Python environment active, run from this repository:
 
 ```bat
 setup_venv.bat
 python -m pip install -r requirements.txt
 python -m pip install --no-deps -r requirements-arm-tosa.txt
 ```
-
-The two `python -m pip` commands use the activated **Zephyr** environment. `setup_venv.bat` prepares the separate project environment. Do this once; repeat when dependencies change. If `torchgen` is missing from the build environment, ExecuTorch's configure step can appear to hang rather than immediately report the missing import.
 
 ## Prepare the model
 
