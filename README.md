@@ -45,6 +45,7 @@ python3 create_ai_layer.py cmsis-executorch.cbuild-mlops.yml
 - **[CMakeLists.txt](zephyr_native_app/CMakeLists.txt)**
   - Use native ExecuTorch module discovery and model-header generation from the upstream `hello-executorch` sample.
   - Find the installed `flatc.exe` to avoid the Windows Ninja byproduct mismatch.
+  - This filename mismatch is expected to be Windows-specific: Linux uses `flatc` for both the declared byproduct and executable. Linux has not been tested here.
   - Add `add_dependencies(executorch_core zephyr_generated_headers)` to wait for generated Zephyr headers.
   - Exclude unused `flatcc_ep` / `flatccrt` targets on Windows; their host build otherwise picks the embedded compiler.
   - Generate `tinycnn_quantized_ops_lib` for the model's quantize/dequantize operators.
