@@ -4,7 +4,7 @@ __pycache__/
 *.pyc
 *.bak
 
-# export_model.py writes the program to ai_layer/model.pte; CMake embeds it.
+# create_ai_layer.py generates the program; the native app embeds model.pte.
 *.pte
 
 # CMSIS-Toolbox and Zephyr build outputs.

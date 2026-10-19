@@ -1,5 +1,5 @@
 # Corstone-320 FVP settings for the native Zephyr application.
-# Must match export_model.py's ethos-u85-256 target.
+# Must match the Ethos-U85-256 target used by create_ai_layer.py.
 mps4_board.subsystem.ethosu.num_macs=256
 
 # Match Zephyr's mps4/corstone320/fvp boot configuration.
