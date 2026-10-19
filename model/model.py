@@ -1,6 +1,6 @@
 # Copyright 2026 Arm Limited and/or its affiliates.
 # SPDX-License-Identifier: Apache-2.0
-"""The starter model: a tiny CNN classifier, quantized to int8 for Ethos-U85 by create_ai_layer.py.
+"""The starter model: a tiny CNN classifier, quantized to int8 for Ethos-U85 by export_model.py.
 
 Small enough to export in seconds and fully partition onto the NPU, but real
 enough to exercise conv / relu / pool / linear through Vela. Input is a single
@@ -40,7 +40,7 @@ class TinyCNN(nn.Module):
 def get_model(input_shape: tuple[int, ...] = INPUT_SHAPE) -> nn.Module:
     # Fixed seed: the starter model uses untrained (random) weights, and a fixed seed
     # keeps the exported program identical from one export to the next (the
-    # C array also embeds the Vela options, so the same working directory is
+    # program also embeds the Vela options, so the same working directory is
     # part of that guarantee).
     torch.manual_seed(0)
     return TinyCNN(input_shape).eval()

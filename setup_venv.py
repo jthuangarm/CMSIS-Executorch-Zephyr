@@ -2,7 +2,7 @@
 # Copyright 2026 Arm Limited and/or its affiliates.
 # SPDX-License-Identifier: Apache-2.0
 #
-# Create the Python venv used by create_ai_layer.py to export the model. No Docker.
+# Create the Python venv used by export_model.py to export the model. No Docker.
 #
 # Runs on Linux, macOS and Windows. The thin wrappers setup_venv.sh and
 # setup_venv.bat just delegate here; everything OS-specific lives in this file.
@@ -37,7 +37,7 @@ def venv_python(venv_dir: Path) -> Path:
 
     Windows puts it in Scripts/python.exe, everyone else in bin/python. This is
     the one place that difference is encoded; run_in_venv() in
-    create_ai_layer.py makes the same choice.
+    export_model.py makes the same choice.
     """
     if os.name == "nt":
         return venv_dir / "Scripts" / "python.exe"
@@ -217,7 +217,7 @@ def main() -> int:
 
     print()
     print(f"venv ready: {VENV_DIR}")
-    print("create_ai_layer.py runs itself with this interpreter:")
+    print("export_model.py runs itself with this interpreter:")
     print(f"  {python}")
     return 0
 

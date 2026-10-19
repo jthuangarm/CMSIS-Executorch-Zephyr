@@ -1,46 +1,26 @@
 # Copyright 2026 Arm Limited and/or its affiliates.
 # SPDX-License-Identifier: Apache-2.0
 #
-# A template for ExecuTorch applications, initially targeting an Ethos-U85 on
-# the Corstone-320 (SSE-320) FVP.
-# Three steps build it:
-#
-#   cbuild setup cmsis-executorch.csolution.yml --active SSE-320-U85
-#   python create_ai_layer.py cmsis-executorch.cbuild-mlops.yml
-#   cbuild cmsis-executorch.csolution.yml --active SSE-320-U85
-#
-# See CMSIS-Toolbox MLOps information:
-# https://open-cmsis-pack.github.io/cmsis-toolbox/build-overview/#mlops-information
-# `cbuild setup` exports it for create_ai_layer.py to generate the AI layer.
+# Keil Studio builds and runs the native Zephyr ExecuTorch application through west.
 solution:
   created-for: CMSIS-Toolbox@2.15.0
   cdefault:
   compiler: GCC
 
   packs:
-    # The PyTorch::ExecuTorch pack version must match the ExecuTorch Python
-    # exporter in requirements.txt because its runtime consumes the generated .pte.
-    - pack: PyTorch::ExecuTorch@1.5.1
     - pack: ARM::Cortex_DFP
     - pack: ARM::SSE_320_BSP@^2.0.0
-    - pack: ARM::CMSIS-FreeRTOS@^11.3.0
 
   target-types:
-    # Corstone-320 with an Ethos-U85 NPU, simulated on the Arm FVP.
     - type: SSE-320-U85
       board: SSE-320
       device: SSE-320-FVP
-      variables:
-        - Board-Layer: $SolutionDir()$/board/Corstone-320/Board-U85.clayer.yml
-        - AI-Layer: $SolutionDir()$/ai_layer/ai_layer.clayer.yml
       target-set:
         - set:
           images:
             - project-context: cmsis-executorch.Debug
           debugger:
             name: Arm-FVP
-            # On macOS use .vscode/fvp.sh and copy launch.json.mac to launch.json.
-            # See: https://github.com/Arm-Examples/FVPs-on-Mac/tree/main/skills/fvp-debug-setup
             model: FVP_Corstone_SSE-320
             config-file: board/Corstone-320/fvp_config.txt
             args: "--simlimit 60"
@@ -54,24 +34,11 @@ solution:
         - CONFIG_DEBUG_OPTIMIZATIONS: y
 
   projects:
-    # - project: ./cmsis-executorch.cproject.yml
     - west:
         project-id: cmsis-executorch
-        app-path: ./zephyr_app
+        app-path: ./zephyr_native_app
         board: mps4/corstone320/fvp
-
-  # Target and model settings consumed by create_ai_layer.py.
-  mlops:
-    description: TinyCNN int8 image classifier for Ethos-U85
-    npu:
-      type: Ethos-U85                # explicit: the SSE-320 device pack declares no NPU
-    vela:
-      system: Ethos_U85_SYS_DRAM_Mid # system-config from the Vela config
-      memory: Shared_Sram            # memory-mode from the Vela config
-    model:
-      clayer: $AI-Layer$
-      name: TinyCNN
-      # Model parameters for create_ai_layer.py: the NHWC input shape and the
-      # number of samples the quantizer is calibrated with.
-      input-shape: 1x16x16x3
-      calibration-samples: 2
+        west-defs:
+          - ET_PTE_FILE_PATH: ../../../../ai_layer/model.pte
+      for-context:
+        - +SSE-320-U85
